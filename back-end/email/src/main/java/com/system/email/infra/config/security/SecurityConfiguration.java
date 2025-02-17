@@ -12,7 +12,19 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 
+import java.util.List;
+
+/**
+ *
+ * The security configured to handle OAuth 2.0 authentication.
+ *
+ * @author Marcus Rolemnerg
+ * @version 1.0.1
+ * @since 2025
+ *
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -36,13 +48,22 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(List.of("http://localhost:4200")); // Angular front-end
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+                    config.setAllowCredentials(true);
+                    return config;
+                }))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/", "/login").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**").permitAll()
+                        .requestMatchers("/oauth2/**").permitAll()
                         .anyRequest().authenticated();
                 }).oauth2Login(login -> {
                     Customizer.withDefaults();
-                    login.defaultSuccessUrl("/");
+                    login.defaultSuccessUrl("http://localhost:8080/token");
                 });
         return http.build();
     }

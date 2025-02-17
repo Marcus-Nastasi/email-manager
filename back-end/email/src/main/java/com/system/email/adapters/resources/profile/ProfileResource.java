@@ -11,6 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *
+ * The resource to get profile information or authentication.
+ *
+ * @author Marcus Rolemnerg
+ * @version 1.0.1
+ * @since 2025
+ *
+ */
 @RestController
 public class ProfileResource {
 
@@ -49,5 +58,23 @@ public class ProfileResource {
                 : "No refresh token"
         );
         return response;
+    }
+
+    /**
+     *
+     * This method allows to get access tokens of a logged user.
+     *
+     * @param authentication the OAuth2AuthenticationToken object.
+     *
+     * @return the access toke in JSON format.
+     */
+    @GetMapping("/token")
+    public Map<String, Object> getToken(OAuth2AuthenticationToken authentication) {
+        // Using OAuth2AuthorizedClientService to load the user that is logged.
+        OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
+            authentication.getAuthorizedClientRegistrationId(),
+            authentication.getName()
+        );
+        return Map.of("access_token", authorizedClient.getAccessToken().getTokenValue());
     }
 }
