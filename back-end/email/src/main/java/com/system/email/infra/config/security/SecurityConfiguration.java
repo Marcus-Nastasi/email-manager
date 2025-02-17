@@ -1,5 +1,6 @@
 package com.system.email.infra.config.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -15,6 +16,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
+
+    @Value("${api.google.clientId}")
+    private String clientId;
+    @Value("${api.google.clientSecret}")
+    private String clientSecret;
 
     /**
      *
@@ -50,19 +56,19 @@ public class SecurityConfiguration {
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
         ClientRegistration googleClientRegistration = ClientRegistration
-                .withRegistrationId("google")
-                .clientId(clientId)
-                .clientSecret(clientSecret)
-                .scope("openid", "profile", "email")
-                .authorizationUri("https://accounts.google.com/o/oauth2/auth?access_type=offline&prompt=consent")
-                .tokenUri("https://oauth2.googleapis.com/token")
-                .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
-                .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
-                .userNameAttributeName("name")
-                .redirectUri("{baseUrl}/login/oauth2/code/google")
-                .clientName("Google")
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .build();
+            .withRegistrationId("google")
+            .clientId(clientId)
+            .clientSecret(clientSecret)
+            .scope("openid", "profile", "email","https://www.googleapis.com/auth/gmail.readonly","https://www.googleapis.com/auth/gmail.send","https://www.googleapis.com/auth/gmail.modify")
+            .authorizationUri("https://accounts.google.com/o/oauth2/auth?access_type=offline&prompt=consent")
+            .tokenUri("https://oauth2.googleapis.com/token")
+            .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
+            .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
+            .userNameAttributeName("name")
+            .redirectUri("{baseUrl}/login/oauth2/code/google")
+            .clientName("Google")
+            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+            .build();
         return new InMemoryClientRegistrationRepository(googleClientRegistration);
     }
 }
