@@ -73,9 +73,9 @@ public class GmailRepoGateway implements GmailGateway {
                 return decodeBase64(encodedContent);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error processing e-mail.");
         }
-        return "Erro ao processar o e-mail.";
+        return "Error processing e-mail.";
     }
 
     /**
