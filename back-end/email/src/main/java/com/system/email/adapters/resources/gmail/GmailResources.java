@@ -70,4 +70,24 @@ public class GmailResources {
         );
         return ResponseEntity.ok(gmailUseCase.getEmailContent(id, authorizedClient.getAccessToken().getTokenValue()));
     }
+
+    /**
+     *
+     * This method opens the endpoint to retrieve e-mail HTML based on id.
+     *
+     * @param id the e-mail id.
+     * @param authenticationToken the authentication from security oauth 2.
+     *
+     * @return The HTML string.
+     */
+    @GetMapping("/find/email/html/{id}")
+    public ResponseEntity<String> findEmailHtml(@PathVariable("id") String id, OAuth2AuthenticationToken authenticationToken) {
+        if (authenticationToken == null) throw new RuntimeException("Usuário não autenticado!");
+        // Using OAuth2AuthorizedClientService to load the user that is logged.
+        OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
+                authenticationToken.getAuthorizedClientRegistrationId(),
+                authenticationToken.getName()
+        );
+        return ResponseEntity.ok(gmailUseCase.getEmailHtml(id, authorizedClient.getAccessToken().getTokenValue()));
+    }
 }

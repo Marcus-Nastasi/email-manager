@@ -48,6 +48,18 @@ public class GmailUseCase {
 
     /**
      *
+     *
+     *
+     * @param messageId
+     * @param accessToken
+     * @return
+     */
+    public String getEmailHtml(String messageId, String accessToken) {
+        return gmailGateway.getEmailHtml(messageId, accessToken);
+    }
+
+    /**
+     *
      * This method allows to extract the body from the response.
      *
      * @param jsonResponse the api response.

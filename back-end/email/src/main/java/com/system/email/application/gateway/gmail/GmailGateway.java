@@ -25,6 +25,8 @@ public interface GmailGateway {
      */
     String getEmailContent(String messageId, String accessToken);
 
+    String getEmailHtml(String messageId, String accessToken);
+
     /**
      *
      * This method should allow to extract the body from the response.
