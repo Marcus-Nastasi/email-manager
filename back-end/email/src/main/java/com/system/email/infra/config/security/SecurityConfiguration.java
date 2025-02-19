@@ -52,7 +52,7 @@ public class SecurityConfiguration {
             .csrf(AbstractHttpConfigurer::disable)
             .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-            .oauth2Login(oauth2 -> oauth2.defaultSuccessUrl("http://localhost:4200/home", true))
+            .oauth2Login(oauth2 -> oauth2.defaultSuccessUrl("http://localhost:4200/", true))
             .logout(logout -> logout.logoutUrl("/logout").invalidateHttpSession(true));
         return http.build();
     }

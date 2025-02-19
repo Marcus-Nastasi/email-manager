@@ -2,6 +2,8 @@ package com.system.email.application.usecases.gmail;
 
 import com.system.email.application.gateway.gmail.GmailGateway;
 
+import java.util.List;
+
 /**
  *
  * The gmail use case.
@@ -19,17 +21,38 @@ public class GmailUseCase {
         this.gmailGateway = gmailGateway;
     }
 
-    public String getEmailContent(String messageId, String accessToken) {
-        return gmailGateway.getEmailContent(messageId, accessToken);
+    /**
+     *
+     *
+     *
+     * @param accessToken
+     * @param maxResults
+     * @param pageToken
+     * @return
+     */
+    public List<String> listEmails(String accessToken, int maxResults, String pageToken) {
+        return gmailGateway.listEmails(accessToken, maxResults, pageToken);
     }
 
     /**
      *
      *
      *
-     * @param jsonResponse
-     *
+     * @param messageId
+     * @param accessToken
      * @return
+     */
+    public String getEmailContent(String messageId, String accessToken) {
+        return gmailGateway.getEmailContent(messageId, accessToken);
+    }
+
+    /**
+     *
+     * This method allows to extract the body from the response.
+     *
+     * @param jsonResponse the api response.
+     *
+     * @return the body extracted.
      */
     private String extractBodyFromJson(String jsonResponse) {
         return gmailGateway.extractBodyFromJson(jsonResponse);
@@ -37,11 +60,11 @@ public class GmailUseCase {
 
     /**
      *
+     * This method allows to decode the response from base64.
      *
+     * @param encodedContent encoded content.
      *
-     * @param encodedContent
-     *
-     * @return
+     * @return decoded html string.
      */
     private String decodeBase64(String encodedContent) {
         return gmailGateway.decodeBase64(encodedContent);

@@ -1,10 +1,16 @@
 package com.system.email.adapters.resources.gmail;
 
+import com.google.gson.JsonObject;
 import com.system.email.application.usecases.gmail.GmailUseCase;
+import jakarta.websocket.server.PathParam;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -26,23 +32,42 @@ public class GmailResources {
         this.authorizedClientService = oAuth2AuthorizedClientService;
     }
 
+    @GetMapping("/find/email")
+    public ResponseEntity<List<String>> findEmails(@RequestParam(defaultValue = "10") int maxResults,
+                                             @RequestParam(required = false) String pageToken,
+                                             OAuth2AuthenticationToken authenticationToken) {
+        if (authenticationToken == null) throw new RuntimeException("Usuário não autenticado!");
+        // Using OAuth2AuthorizedClientService to load the user that is logged.
+        OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
+                authenticationToken.getAuthorizedClientRegistrationId(),
+                authenticationToken.getName()
+        );
+        List<String> emailIds = gmailUseCase.listEmails(authorizedClient
+                .getAccessToken()
+                .getTokenValue(),
+                maxResults, pageToken);
+//        List<Map<String, String>> emails = emailIds;
+
+        return ResponseEntity.ok(emailIds);
+    }
+
     /**
      *
      * This method opens the endpoint to retrieve e-mail HTML based on id.
      *
-     * *@param id the e-mail id.
-     * *@param authentication the authentication from security oauth 2.
+     * @param id the e-mail id.
+     * @param authenticationToken the authentication from security oauth 2.
      *
      * @return The HTML string.
      */
     @GetMapping("/find/email/{id}")
-    public String findEmailById(@PathVariable("id") String id, OAuth2AuthenticationToken authenticationToken) {
+    public ResponseEntity<String> findEmailById(@PathVariable("id") String id, OAuth2AuthenticationToken authenticationToken) {
         if (authenticationToken == null) throw new RuntimeException("Usuário não autenticado!");
         // Using OAuth2AuthorizedClientService to load the user that is logged.
         OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
             authenticationToken.getAuthorizedClientRegistrationId(),
             authenticationToken.getName()
         );
-        return gmailUseCase.getEmailContent(id, authorizedClient.getAccessToken().getTokenValue());
+        return ResponseEntity.ok(gmailUseCase.getEmailContent(id, authorizedClient.getAccessToken().getTokenValue()));
     }
 }

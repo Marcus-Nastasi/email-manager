@@ -1,5 +1,7 @@
 package com.system.email.application.gateway.gmail;
 
+import java.util.List;
+
 /**
  *
  * The gmail gateway interface.
@@ -9,6 +11,8 @@ package com.system.email.application.gateway.gmail;
  * @since 2025
  */
 public interface GmailGateway {
+
+    List<String> listEmails(String accessToken, int maxResults, String pageToken);
 
     /**
      *
@@ -23,21 +27,21 @@ public interface GmailGateway {
 
     /**
      *
+     * This method should allow to extract the body from the response.
      *
+     * @param jsonResponse the response.
      *
-     * @param jsonResponse
-     *
-     * @return
+     * @return the body extracted.
      */
     String extractBodyFromJson(String jsonResponse);
 
     /**
      *
+     * This method should allow to decode the response from base64.
      *
+     * @param encodedContent content encoded in base64.
      *
-     * @param encodedContent
-     *
-     * @return
+     * @return the pure html string.
      */
     String decodeBase64(String encodedContent);
 }

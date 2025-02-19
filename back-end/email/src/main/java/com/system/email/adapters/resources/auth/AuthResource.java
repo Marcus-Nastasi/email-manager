@@ -1,4 +1,4 @@
-package com.system.email.adapters.resources.profile;
+package com.system.email.adapters.resources.auth;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -21,11 +21,11 @@ import java.util.Map;
  *
  */
 @RestController
-public class ProfileResource {
+public class AuthResource {
 
     private final OAuth2AuthorizedClientService authorizedClientService;
 
-    public ProfileResource(OAuth2AuthorizedClientService authorizedClientService) {
+    public AuthResource(OAuth2AuthorizedClientService authorizedClientService) {
         this.authorizedClientService = authorizedClientService;
     }
 
@@ -38,6 +38,7 @@ public class ProfileResource {
      *
      * @param user The Oidc User object.
      * @param authentication The authentication token.
+     *
      * @return Return a map of a spring an objects, that represents the personal google account.
      */
     @GetMapping("/")
@@ -51,12 +52,9 @@ public class ProfileResource {
         Map<String, Object> response = new HashMap<>(user.getClaims());
         // Putting the access_token and refresh_token manually.
         response.put("access_token", authorizedClient.getAccessToken().getTokenValue());
-        response.put(
-            "refresh_token",
-            authorizedClient.getRefreshToken() != null
-                ? authorizedClient.getRefreshToken().getTokenValue()
-                : "No refresh token"
-        );
+        response.put("refresh_token", authorizedClient.getRefreshToken() != null
+            ? authorizedClient.getRefreshToken().getTokenValue()
+            : "No refresh token");
         return response;
     }
 
