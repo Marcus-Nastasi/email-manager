@@ -62,6 +62,14 @@ public class GmailRepoGateway implements GmailGateway {
         return extractBodyFromJson(response.getBody());
     }
 
+    /**
+     *
+     *
+     *
+     * @param jsonResponse
+     *
+     * @return
+     */
     public String extractBodyToEmailContent(String jsonResponse) {
         try {
             JsonObject json = gson.fromJson(jsonResponse, JsonObject.class);
@@ -88,7 +96,12 @@ public class GmailRepoGateway implements GmailGateway {
 
                 for (PayloadHeaders s: headers) {
                     if (s.name().equals("Date")) responseMap.put("date", s.value());
-                    if (s.name().equals("From")) responseMap.put("from", s.value());
+                    if (s.name().equals("From")) {
+                        String fromString = s.value();
+                        String name = Arrays.stream(fromString.split("<")).toList().getFirst().trim();
+                        String email = Arrays.stream(fromString.split("<")).toList().getLast().replace(">", "").trim();
+                        responseMap.put("from", name + " " + email);
+                    }
                     if (s.name().equals("Subject")) responseMap.put("subject", s.value());
                 }
 
