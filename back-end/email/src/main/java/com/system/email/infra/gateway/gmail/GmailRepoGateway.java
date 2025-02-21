@@ -28,6 +28,42 @@ public class GmailRepoGateway implements GmailGateway {
 
     /**
      *
+     * This function allows to list all e-mails as a string array.
+     *
+     * @param accessToken the user access token.
+     * @param maxResults the max number of e-mails to get.
+     * @param pageToken the page token number.
+     *
+     * @return a list of strings that are the e-mail ids and next page token.
+     */
+    @Override
+    public List<String> listEmails(String accessToken, int maxResults, String pageToken) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        // Make api call to get e-mail ids.
+        String url = "https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=" + maxResults;
+        // Check if next page token has been passed as an argument.
+        if (pageToken != null && !pageToken.isEmpty()) {
+            url += "&pageToken=" + pageToken;
+        }
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        String response = restTemplate
+            .exchange(url, HttpMethod.GET, entity, String.class)
+            .getBody();
+        JsonObject responseParsed = gson.fromJson(response, JsonObject.class);
+        JsonArray emailsList = responseParsed.getAsJsonArray("messages");
+        List<String> emailIds = new ArrayList<>();
+        for (int i = 0; i < emailsList.size(); i++) {
+            JsonObject email = emailsList.get(i).getAsJsonObject();
+            emailIds.add(email.get("id").getAsString());
+        }
+        emailIds.add(responseParsed.get("nextPageToken").getAsString());
+        return emailIds;
+    }
+
+    /**
+     *
      * This method allows to get an e-mail content from an id.
      *
      * @param messageId the id of the e-mail.
@@ -40,7 +76,12 @@ public class GmailRepoGateway implements GmailGateway {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(API_URL + messageId, HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(
+            API_URL
+            + messageId,
+            HttpMethod.GET,
+            entity,
+            String.class);
         return extractBodyToEmailContent(response.getBody());
     }
 
@@ -58,17 +99,23 @@ public class GmailRepoGateway implements GmailGateway {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(API_URL + messageId, HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(
+            API_URL
+            + messageId,
+            HttpMethod.GET,
+            entity,
+            String.class);
         return extractBodyFromJson(response.getBody());
     }
 
     /**
      *
+     * This method allows to extract the card model information from the json
+     * response from gmail.
      *
+     * @param jsonResponse the gmail response to parse.
      *
-     * @param jsonResponse
-     *
-     * @return
+     * @return the structured object that represents the card data.
      */
     public String extractBodyToEmailContent(String jsonResponse) {
         try {
@@ -81,19 +128,19 @@ public class GmailRepoGateway implements GmailGateway {
                 .toList();
             JsonObject payload = json.getAsJsonObject("payload");
             Map<String, Object> responseMap = new HashMap<>();
-
+            // Including id, labels and snippet on response.
             responseMap.put("id", json.get("id").getAsString());
             responseMap.put("labelIds", labelIds);
             responseMap.put("snippet", json.get("snippet").getAsString());
-
             if (payload.has("headers")) {
+                // Parsing header objects to PayloadHeaders record class.
                 List<PayloadHeaders> headers = payload.get("headers")
                     .getAsJsonArray()
                     .asList()
                     .stream()
                     .map(e -> gson.fromJson(e.toString(), PayloadHeaders.class))
                     .toList();
-
+                // Getting information from payload header.
                 for (PayloadHeaders s: headers) {
                     if (s.name().equals("Date")) responseMap.put("date", s.value());
                     if (s.name().equals("From")) {
@@ -104,40 +151,35 @@ public class GmailRepoGateway implements GmailGateway {
                     }
                     if (s.name().equals("Subject")) responseMap.put("subject", s.value());
                 }
-
             }
-
             // Verify if is parts on e-mail (text/plain and text/html).
             if (payload.has("parts")) {
                 JsonArray parts = payload.getAsJsonArray("parts");
-
+                // Iterate into parts to find text/plain mime type object.
                 for (int i = 0; i < parts.size(); i++) {
                     JsonObject part = parts.get(i).getAsJsonObject();
                     String mimeType = part.get("mimeType").getAsString();
-
                     if ("text/plain".equals(mimeType)) {
                         String content = part.getAsJsonObject("body").get("data").getAsString();
-                        String contentDecoded = this.decodeBase64(content);
+                        String contentDecoded = decodeBase64(content);
                         responseMap.put("partOneText", contentDecoded);
                     }
                 }
-
                 return gson.toJson(responseMap);
-
             } else if (payload.has("body")) { // If it doesn't have "parts", verify the body directly.
                 String encodedContent = payload.getAsJsonObject("body").get("data").getAsString();
                 responseMap.put("partOneText", decodeBase64(encodedContent));
                 return gson.toJson(responseMap);
             }
+            return "Error processing e-mail: does not have parts";
         } catch (Exception e) {
             throw new RuntimeException(e.getCause());
         }
-        return "Error processing e-mail.";
     }
 
     /**
      *
-     * This method allows to extract the body from the response.
+     * This method allows to extract the body from the response and return HTML string.
      *
      * @param jsonResponse the api response.
      *
@@ -147,29 +189,26 @@ public class GmailRepoGateway implements GmailGateway {
         try {
             JsonObject json = gson.fromJson(jsonResponse, JsonObject.class);
             JsonObject payload = json.getAsJsonObject("payload");
-
             // Verify if is parts on e-mail (text/plain and text/html).
             if (payload.has("parts")) {
                 JsonArray parts = payload.getAsJsonArray("parts");
-
                 for (int i = 0; i < parts.size(); i++) {
                     JsonObject part = parts.get(i).getAsJsonObject();
                     String mimeType = part.get("mimeType").getAsString();
-
-                    if ("text/html".equals(mimeType)) { // Prioritizes HTML.
+                    // Prioritizes HTML.
+                    if ("text/html".equals(mimeType)) {
                         String encodedContent = part.getAsJsonObject("body").get("data").getAsString();
                         return decodeBase64(encodedContent);
                     }
                 }
-
             } else if (payload.has("body")) { // If it doesn't have "parts", verify the body directly.
                 String encodedContent = payload.getAsJsonObject("body").get("data").getAsString();
                 return decodeBase64(encodedContent);
             }
+            return "Error processing e-mail: does not have parts.";
         } catch (Exception e) {
             throw new RuntimeException("Error processing e-mail.");
         }
-        return "Error processing e-mail.";
     }
 
     /**
@@ -183,40 +222,5 @@ public class GmailRepoGateway implements GmailGateway {
     public String decodeBase64(String encodedContent) {
         byte[] decodedBytes = Base64.getUrlDecoder().decode(encodedContent);
         return new String(decodedBytes);
-    }
-
-    /**
-     *
-     *
-     *
-     * @param accessToken
-     * @param maxResults
-     * @param pageToken
-     * @return
-     */
-    @Override
-    public List<String> listEmails(String accessToken, int maxResults, String pageToken) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken);
-        String url = "https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=" + maxResults;
-
-        if (pageToken != null && !pageToken.isEmpty()) {
-            url += "&pageToken=" + pageToken;
-        }
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-        JsonObject jsonResponse = gson.fromJson(response.getBody(), JsonObject.class);
-        JsonArray messages = jsonResponse.getAsJsonArray("messages");
-        List<String> messageIds = new ArrayList<>();
-
-        for (int i = 0; i < messages.size(); i++) {
-            JsonObject message = messages.get(i).getAsJsonObject();
-            messageIds.add(message.get("id").getAsString());
-        }
-
-        messageIds.add(jsonResponse.get("nextPageToken").getAsString());
-        return messageIds;
     }
 }
