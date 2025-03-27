@@ -1,5 +1,6 @@
 package com.system.email.adapters.resources.auth;
 
+import com.system.email.adapters.output.AuthenticationResponseDto;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -12,13 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * The resource to get profile information or authentication.
  *
- * @author Marcus Rolemnerg
+ * @author Marcus Rolemberg
  * @version 1.0.1
  * @since 2025
- *
  */
 @RestController
 public class AuthResource {
@@ -30,7 +29,6 @@ public class AuthResource {
     }
 
     /**
-     *
      * Validates if user is logged in.
      *
      * <p>This endpoint allows users to retrieve their personal Google Account object,
@@ -59,7 +57,6 @@ public class AuthResource {
     }
 
     /**
-     *
      * This method allows to get access tokens of a logged user.
      *
      * @param authentication the OAuth2AuthenticationToken object.
@@ -67,12 +64,12 @@ public class AuthResource {
      * @return the access toke in JSON format.
      */
     @GetMapping("/token")
-    public Map<String, Object> getToken(OAuth2AuthenticationToken authentication) {
+    public AuthenticationResponseDto getToken(OAuth2AuthenticationToken authentication) {
         // Using OAuth2AuthorizedClientService to load the user that is logged.
         OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
             authentication.getAuthorizedClientRegistrationId(),
             authentication.getName()
         );
-        return Map.of("access_token", authorizedClient.getAccessToken().getTokenValue());
+        return new AuthenticationResponseDto(authorizedClient.getAccessToken().getTokenValue());
     }
 }

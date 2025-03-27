@@ -29,6 +29,15 @@ public class GmailResources {
         this.authorizedClientService = oAuth2AuthorizedClientService;
     }
 
+    /**
+     * Method opens the endpoint to get a list of e-mail ids.
+     *
+     * @param maxResults the max number of e-mail ids to retrieve.
+     * @param pageToken the token that refers to the next page.
+     * @param authenticationToken OAuth token.
+     *
+     * @return the list of ids and next page token.
+     */
     @GetMapping("/find/email")
     public ResponseEntity<List<String>> findEmails(@RequestParam(defaultValue = "10") int maxResults,
                                              @RequestParam(required = false) String pageToken,
@@ -49,7 +58,6 @@ public class GmailResources {
     }
 
     /**
-     *
      * This method opens the endpoint to retrieve e-mail HTML based on id.
      *
      * @param id the e-mail id.
@@ -69,7 +77,6 @@ public class GmailResources {
     }
 
     /**
-     *
      * This method opens the endpoint to retrieve e-mail HTML based on id.
      *
      * @param id the e-mail id.
