@@ -5,13 +5,11 @@ import com.system.email.application.gateway.gmail.GmailGateway;
 import java.util.List;
 
 /**
- *
  * The gmail use case.
  *
  * @author Marcus Rolemnerg
  * @version 1.0.1
  * @since 2025
- *
  */
 public class GmailUseCase {
 
@@ -22,8 +20,6 @@ public class GmailUseCase {
     }
 
     /**
-     *
-     *
      *
      * @param accessToken
      * @param maxResults
@@ -36,8 +32,6 @@ public class GmailUseCase {
 
     /**
      *
-     *
-     *
      * @param messageId
      * @param accessToken
      * @return
@@ -49,7 +43,6 @@ public class GmailUseCase {
     /**
      *
      *
-     *
      * @param messageId
      * @param accessToken
      * @return
@@ -59,7 +52,6 @@ public class GmailUseCase {
     }
 
     /**
-     *
      * This method allows to extract the body from the response.
      *
      * @param jsonResponse the api response.
@@ -70,6 +62,11 @@ public class GmailUseCase {
         return gmailGateway.extractBodyFromJson(jsonResponse);
     }
 
+    /**
+     *
+     * @param messageId
+     * @return
+     */
     public boolean deleteEmail(String messageId) {
         return gmailGateway.deleteEmail(messageId);
     }

@@ -52,8 +52,6 @@ public class GmailResources {
             .getAccessToken()
             .getTokenValue(),
             maxResults, pageToken);
-//        List<Map<String, String>> emails = emailIds;
-
         return ResponseEntity.ok(emailIds);
     }
 

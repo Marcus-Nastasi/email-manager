@@ -2,7 +2,7 @@ package com.system.email.infra.gateway.gmail;
 
 import com.google.gson.*;
 import com.system.email.application.gateway.gmail.GmailGateway;
-import com.system.email.infra.model.gmail.PayloadHeaders;
+import com.system.email.infra.model.gmail.EmailPayloadHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -132,14 +132,14 @@ public class GmailRepoGateway implements GmailGateway {
             responseMap.put("snippet", json.get("snippet").getAsString());
             if (payload.has("headers")) {
                 // Parsing header objects to PayloadHeaders record class.
-                List<PayloadHeaders> headers = payload.get("headers")
+                List<EmailPayloadHeaders> headers = payload.get("headers")
                     .getAsJsonArray()
                     .asList()
                     .stream()
-                    .map(e -> gson.fromJson(e.toString(), PayloadHeaders.class))
+                    .map(e -> gson.fromJson(e.toString(), EmailPayloadHeaders.class))
                     .toList();
                 // Getting information from payload header.
-                for (PayloadHeaders s: headers) {
+                for (EmailPayloadHeaders s: headers) {
                     if (s.name().equals("Date")) responseMap.put("date", s.value());
                     if (s.name().equals("From")) {
                         String fromString = s.value();

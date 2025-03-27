@@ -16,13 +16,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.filter.CorsFilter;
 
 /**
- *
  * The security configured to handle OAuth 2.0 authentication.
  *
  * @author Marcus Rolemnerg
  * @version 1.0.1
  * @since 2025
- *
  */
 @Configuration
 @EnableWebSecurity
@@ -30,13 +28,18 @@ public class SecurityConfiguration {
 
     @Value("${api.google.clientId}")
     private String clientId;
+
     @Value("${api.google.clientSecret}")
     private String clientSecret;
+
+    private final CorsFilter corsFilter;
+
     @Autowired
-    private CorsFilter corsFilter;
+    public SecurityConfiguration(CorsFilter corsFilter) {
+        this.corsFilter = corsFilter;
+    }
 
     /**
-     *
      * Security filter chain configuration.
      *
      * <p>Configured to handle OAuth 2 logins with default handling.<p/>

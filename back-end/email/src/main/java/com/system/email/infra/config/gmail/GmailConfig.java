@@ -7,13 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- *
  * The gmail config.
  *
  * @author Marcus Rolemnerg
  * @version 1.0.1
  * @since 2025
- *
  */
 @Configuration
 public class GmailConfig {
@@ -22,6 +20,7 @@ public class GmailConfig {
     public GmailGateway gmailGateway() {
         return new GmailRepoGateway();
     }
+
     @Bean
     public GmailUseCase gmailUseCase(GmailGateway gmailGateway) {
         return new GmailUseCase(gmailGateway);

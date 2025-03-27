@@ -16,7 +16,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 
 /**
- *
  * The Redis configuration.
  *
  * <p>This class contains the Redis configurations.<p/>
@@ -30,11 +29,11 @@ public class RedisConfiguration {
 
     @Value("${spring.redis.host}")
     private String hostName;
+
     @Value("${spring.redis.port}")
     private int port;
 
     /**
-     *
      * The redis template config.
      *
      * <p>This method configures a Redis template to handle saving on a specific types of key and value.<p/>
@@ -63,7 +62,6 @@ public class RedisConfiguration {
     }
 
     /**
-     *
      * The explicit configuration to Redis connection.
      *
      * <p>This method explicit configure Redis connection factory.<p/>

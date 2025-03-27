@@ -3,7 +3,6 @@ package com.system.email.application.gateway.gmail;
 import java.util.List;
 
 /**
- *
  * The gmail gateway interface.
  *
  * @author Marcus Rolemnerg
@@ -12,10 +11,16 @@ import java.util.List;
  */
 public interface GmailGateway {
 
+    /**
+     *
+     * @param accessToken
+     * @param maxResults
+     * @param pageToken
+     * @return
+     */
     List<String> listEmails(String accessToken, int maxResults, String pageToken);
 
     /**
-     *
      * This method should allow to get an e-mail content from an id.
      *
      * @param messageId the id of the e-mail.
@@ -35,7 +40,6 @@ public interface GmailGateway {
     String getEmailHtml(String messageId, String accessToken);
 
     /**
-     *
      * This method should allow to extract the body from the response.
      *
      * @param jsonResponse the response.
@@ -52,14 +56,4 @@ public interface GmailGateway {
      * @return
      */
     boolean deleteEmail(String messageId);
-
-    /**
-     *
-     * This method should allow to decode the response from base64.
-     *
-     * @param encodedContent content encoded in base64.
-     *
-     * @return the pure html string.
-     */
-//    String decodeBase64(String encodedContent);
 }

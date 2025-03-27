@@ -9,19 +9,16 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.List;
 
 /**
- *
  * The security CORS configuration.
  *
  * @author Marcus Rolemnerg
  * @version 1.0.1
  * @since 2025
- *
  */
 @Configuration
 public class CorsConfig {
 
     /**
-     *
      * Opening CORS to Angular front-end.
      *
      * @return the new cors filter.
