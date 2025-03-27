@@ -13,7 +13,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.*;
 
 /**
- *
  * The gmail gateway implementation.
  *
  * @author Marcus Rolemnerg
@@ -24,10 +23,10 @@ public class GmailRepoGateway implements GmailGateway {
 
     @Autowired
     private Gson gson;
+
     private static final String API_URL = "https://gmail.googleapis.com/gmail/v1/users/me/messages/";
 
     /**
-     *
      * This function allows to list all e-mails as a string array.
      *
      * @param accessToken the user access token.
@@ -53,17 +52,18 @@ public class GmailRepoGateway implements GmailGateway {
             .getBody();
         JsonObject responseParsed = gson.fromJson(response, JsonObject.class);
         JsonArray emailsList = responseParsed.getAsJsonArray("messages");
+        String nextPageToken = responseParsed.get("nextPageToken").getAsString();
         List<String> emailIds = new ArrayList<>();
         for (int i = 0; i < emailsList.size(); i++) {
             JsonObject email = emailsList.get(i).getAsJsonObject();
-            emailIds.add(email.get("id").getAsString());
+            String emailId = email.get("id").getAsString();
+            emailIds.add(emailId);
         }
-        emailIds.add(responseParsed.get("nextPageToken").getAsString());
+        emailIds.add(nextPageToken);
         return emailIds;
     }
 
     /**
-     *
      * This method allows to get an e-mail content from an id.
      *
      * @param messageId the id of the e-mail.
@@ -86,7 +86,6 @@ public class GmailRepoGateway implements GmailGateway {
     }
 
     /**
-     *
      * This method allows to get an e-mail content from an id.
      *
      * @param messageId the id of the e-mail.
@@ -109,7 +108,6 @@ public class GmailRepoGateway implements GmailGateway {
     }
 
     /**
-     *
      * This method allows to extract the card model information from the json
      * response from gmail.
      *
@@ -171,14 +169,13 @@ public class GmailRepoGateway implements GmailGateway {
                 responseMap.put("partOneText", decodeBase64(encodedContent));
                 return gson.toJson(responseMap);
             }
-            return "Error processing e-mail: does not have parts";
+            return "Error processing e-mail: does not have parts or body";
         } catch (Exception e) {
             throw new RuntimeException(e.getCause());
         }
     }
 
     /**
-     *
      * This method allows to extract the body from the response and return HTML string.
      *
      * @param jsonResponse the api response.
@@ -211,6 +208,11 @@ public class GmailRepoGateway implements GmailGateway {
         }
     }
 
+    @Override
+    public boolean deleteEmail(String messageId) {
+        return false;
+    }
+
     /**
      *
      * This method allows to decode the response from base64.
@@ -219,7 +221,7 @@ public class GmailRepoGateway implements GmailGateway {
      *
      * @return the pure html string.
      */
-    public String decodeBase64(String encodedContent) {
+    private String decodeBase64(String encodedContent) {
         byte[] decodedBytes = Base64.getUrlDecoder().decode(encodedContent);
         return new String(decodedBytes);
     }

@@ -48,8 +48,7 @@ public class SecurityConfiguration {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(AbstractHttpConfigurer::disable)
+        http.csrf(AbstractHttpConfigurer::disable)
             .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
             .oauth2Login(oauth2 -> oauth2.defaultSuccessUrl("http://localhost:4200/", true))
@@ -58,7 +57,6 @@ public class SecurityConfiguration {
     }
 
     /**
-     *
      * Configuration of the details of authentication, like scopes, URIs, redirection, etc.
      *
      * @return A new object of ClientRegistrationRepository, with the details.

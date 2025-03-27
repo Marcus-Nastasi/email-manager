@@ -70,15 +70,7 @@ public class GmailUseCase {
         return gmailGateway.extractBodyFromJson(jsonResponse);
     }
 
-    /**
-     *
-     * This method allows to decode the response from base64.
-     *
-     * @param encodedContent encoded content.
-     *
-     * @return decoded html string.
-     */
-    private String decodeBase64(String encodedContent) {
-        return gmailGateway.decodeBase64(encodedContent);
+    public boolean deleteEmail(String messageId) {
+        return gmailGateway.deleteEmail(messageId);
     }
 }

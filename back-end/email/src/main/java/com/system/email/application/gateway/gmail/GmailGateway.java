@@ -25,6 +25,13 @@ public interface GmailGateway {
      */
     String getEmailContent(String messageId, String accessToken);
 
+    /**
+     *
+     *
+     * @param messageId
+     * @param accessToken
+     * @return
+     */
     String getEmailHtml(String messageId, String accessToken);
 
     /**
@@ -39,11 +46,20 @@ public interface GmailGateway {
 
     /**
      *
+     *
+     *
+     * @param messageId
+     * @return
+     */
+    boolean deleteEmail(String messageId);
+
+    /**
+     *
      * This method should allow to decode the response from base64.
      *
      * @param encodedContent content encoded in base64.
      *
      * @return the pure html string.
      */
-    String decodeBase64(String encodedContent);
+//    String decodeBase64(String encodedContent);
 }

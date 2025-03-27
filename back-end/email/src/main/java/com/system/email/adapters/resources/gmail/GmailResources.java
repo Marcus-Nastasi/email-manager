@@ -1,8 +1,6 @@
 package com.system.email.adapters.resources.gmail;
 
-import com.google.gson.JsonObject;
 import com.system.email.application.usecases.gmail.GmailUseCase;
-import jakarta.websocket.server.PathParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -10,7 +8,6 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -39,13 +36,13 @@ public class GmailResources {
         if (authenticationToken == null) throw new RuntimeException("Usuário não autenticado!");
         // Using OAuth2AuthorizedClientService to load the user that is logged.
         OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
-                authenticationToken.getAuthorizedClientRegistrationId(),
-                authenticationToken.getName()
+            authenticationToken.getAuthorizedClientRegistrationId(),
+            authenticationToken.getName()
         );
         List<String> emailIds = gmailUseCase.listEmails(authorizedClient
-                .getAccessToken()
-                .getTokenValue(),
-                maxResults, pageToken);
+            .getAccessToken()
+            .getTokenValue(),
+            maxResults, pageToken);
 //        List<Map<String, String>> emails = emailIds;
 
         return ResponseEntity.ok(emailIds);
@@ -85,8 +82,8 @@ public class GmailResources {
         if (authenticationToken == null) throw new RuntimeException("Usuário não autenticado!");
         // Using OAuth2AuthorizedClientService to load the user that is logged.
         OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
-                authenticationToken.getAuthorizedClientRegistrationId(),
-                authenticationToken.getName()
+            authenticationToken.getAuthorizedClientRegistrationId(),
+            authenticationToken.getName()
         );
         return ResponseEntity.ok(gmailUseCase.getEmailHtml(id, authorizedClient.getAccessToken().getTokenValue()));
     }
