@@ -230,9 +230,27 @@ public class GmailRepoGateway implements GmailGateway {
         return response.getBody();
     }
 
+    /**
+     * This method allows to delete permanently the e-mail.
+     *
+     * @param messageId the e-mail id.
+     * @param accessToken the user access token.
+     *
+     * @return a {@link String} representing the deleted e-mail.
+     */
     @Override
-    public boolean deleteEmail(String messageId) {
-        return false;
+    public String deleteEmail(String messageId, String accessToken) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        String url = API_URL + messageId;
+        ResponseEntity<String> response = restTemplate.exchange(
+                url,
+                HttpMethod.DELETE,
+                entity,
+                String.class);
+        return response.getBody();
     }
 
     /**

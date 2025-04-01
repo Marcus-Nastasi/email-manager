@@ -55,6 +55,7 @@ public interface GmailGateway {
      * This method should allow to move an e-mail to trash.
      *
      * @param messageId the e-mail id.
+     *
      * @return a {@link String} representing the e-mail id moved to trash.
      */
     String moveToTrash(String messageId, String accessToken);
@@ -64,7 +65,7 @@ public interface GmailGateway {
      *
      * @param messageId the e-mail id.
      *
-     * @return a {@link Boolean} representing if the e-mail was deleted.
+     * @return a {@link String} representing the deleted e-mail.
      */
-    boolean deleteEmail(String messageId);
+    String deleteEmail(String messageId, String accessToken);
 }

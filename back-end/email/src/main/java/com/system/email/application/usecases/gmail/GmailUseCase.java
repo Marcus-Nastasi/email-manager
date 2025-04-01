@@ -71,7 +71,8 @@ public class GmailUseCase {
      * This method allows to move an e-mail to trash.
      *
      * @param messageId e-mail id.
-     * @return a string representing the e-mail id moved to trash.
+     *
+     * @return a {@link String} representing the e-mail id moved to trash.
      */
     public String moveToTrash(String messageId, String acessToken) {
         return gmailGateway.moveToTrash(messageId, acessToken);
@@ -84,7 +85,7 @@ public class GmailUseCase {
      *
      * @return a {@link Boolean} representing if the e-mail was deleted.
      */
-    public boolean deleteEmail(String messageId) {
-        return gmailGateway.deleteEmail(messageId);
+    public String deleteEmail(String messageId, String accessToken) {
+        return gmailGateway.deleteEmail(messageId, accessToken);
     }
 }

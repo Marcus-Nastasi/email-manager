@@ -98,9 +98,9 @@ public class GmailResources {
      * @param id the e-mail id.
      * @param authenticationToken the authentication from security oauth 2.
      *
-     * @return The HTML string.
+     * @return The {@link String} informing the status.
      */
-    @GetMapping("/trash/email/{id}")
+    @PatchMapping("/trash/email/{id}")
     public ResponseEntity<String> moveToTrash(@PathVariable("id") String id, OAuth2AuthenticationToken authenticationToken) {
         if (authenticationToken == null) throw new RuntimeException("Usuário não autenticado!");
         // Using OAuth2AuthorizedClientService to load the user that is logged.
@@ -109,5 +109,24 @@ public class GmailResources {
                 authenticationToken.getName()
         );
         return ResponseEntity.ok(gmailUseCase.moveToTrash(id, authorizedClient.getAccessToken().getTokenValue()));
+    }
+
+    /**
+     * This method opens the endpoint to delete permanently e-mails.
+     *
+     * @param id the e-mail id.
+     * @param authenticationToken the authentication from security oauth 2.
+     *
+     * @return The {@link String} representing the e-mail's new status.
+     */
+    @DeleteMapping("/delete/email/{id}")
+    public ResponseEntity<String> deleteEmail(@PathVariable("id") String id, OAuth2AuthenticationToken authenticationToken) {
+        if (authenticationToken == null) throw new RuntimeException("Usuário não autenticado!");
+        // Using OAuth2AuthorizedClientService to load the user that is logged.
+        OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
+                authenticationToken.getAuthorizedClientRegistrationId(),
+                authenticationToken.getName()
+        );
+        return ResponseEntity.ok(gmailUseCase.deleteEmail(id, authorizedClient.getAccessToken().getTokenValue()));
     }
 }
