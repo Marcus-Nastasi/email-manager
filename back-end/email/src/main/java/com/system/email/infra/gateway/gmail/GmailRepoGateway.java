@@ -208,13 +208,34 @@ public class GmailRepoGateway implements GmailGateway {
         }
     }
 
+    /**
+     * This method implements the function to move an e-mail to trash.
+     *
+     * @param messageId e-mail id.
+     *
+     * @return a string representing the e-mail id moved to trash.
+     */
+    @Override
+    public String moveToTrash(String messageId, String accessToken) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        String url = API_URL + messageId + "/trash";
+        ResponseEntity<String> response = restTemplate.exchange(
+                url,
+                HttpMethod.POST,
+                entity,
+                String.class);
+        return response.getBody();
+    }
+
     @Override
     public boolean deleteEmail(String messageId) {
         return false;
     }
 
     /**
-     *
      * This method allows to decode the response from base64.
      *
      * @param encodedContent content encoded in base64.

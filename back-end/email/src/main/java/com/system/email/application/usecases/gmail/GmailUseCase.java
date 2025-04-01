@@ -20,32 +20,37 @@ public class GmailUseCase {
     }
 
     /**
+     * This method lists the e-mail ids.
      *
-     * @param accessToken
-     * @param maxResults
-     * @param pageToken
-     * @return
+     * @param accessToken user token.
+     * @param maxResults the max number of e-mail ids to list.
+     * @param pageToken the next page's token.
+     *
+     * @return a {@link List} of e-mail ids {@link String}
      */
     public List<String> listEmails(String accessToken, int maxResults, String pageToken) {
         return gmailGateway.listEmails(accessToken, maxResults, pageToken);
     }
 
     /**
+     * This method allows to get an e-mail content from an id.
      *
-     * @param messageId
-     * @param accessToken
-     * @return
+     * @param messageId the id of the e-mail.
+     * @param accessToken the user token.
+     *
+     * @return A {@link String} (json) with data.
      */
     public String getEmailContent(String messageId, String accessToken) {
         return gmailGateway.getEmailContent(messageId, accessToken);
     }
 
     /**
+     * Makes the request to get the e-mail html.
      *
+     * @param messageId the e-mail id.
+     * @param accessToken the user token.
      *
-     * @param messageId
-     * @param accessToken
-     * @return
+     * @return the e-mail html in {@link String} format.
      */
     public String getEmailHtml(String messageId, String accessToken) {
         return gmailGateway.getEmailHtml(messageId, accessToken);
@@ -54,18 +59,30 @@ public class GmailUseCase {
     /**
      * This method allows to extract the body from the response.
      *
-     * @param jsonResponse the api response.
+     * @param jsonResponse the response.
      *
-     * @return the body extracted.
+     * @return the body extracted in {@link String} format.
      */
     private String extractBodyFromJson(String jsonResponse) {
         return gmailGateway.extractBodyFromJson(jsonResponse);
     }
 
     /**
+     * This method allows to move an e-mail to trash.
      *
-     * @param messageId
-     * @return
+     * @param messageId e-mail id.
+     * @return a string representing the e-mail id moved to trash.
+     */
+    public String moveToTrash(String messageId, String acessToken) {
+        return gmailGateway.moveToTrash(messageId, acessToken);
+    }
+
+    /**
+     * This method allows to delete permanently the e-mail.
+     *
+     * @param messageId the e-mail id.
+     *
+     * @return a {@link Boolean} representing if the e-mail was deleted.
      */
     public boolean deleteEmail(String messageId) {
         return gmailGateway.deleteEmail(messageId);

@@ -12,11 +12,13 @@ import java.util.List;
 public interface GmailGateway {
 
     /**
+     * This method should list the e-mail ids.
      *
-     * @param accessToken
-     * @param maxResults
-     * @param pageToken
-     * @return
+     * @param accessToken user token.
+     * @param maxResults the max number of e-mail ids to list.
+     * @param pageToken the next page's token.
+     *
+     * @return a {@link List} of e-mail ids {@link String}
      */
     List<String> listEmails(String accessToken, int maxResults, String pageToken);
 
@@ -26,16 +28,17 @@ public interface GmailGateway {
      * @param messageId the id of the e-mail.
      * @param accessToken the user token.
      *
-     * @return A string (json) with data.
+     * @return A {@link String} (json) with data.
      */
     String getEmailContent(String messageId, String accessToken);
 
     /**
+     * Should make the request to get the e-mail html.
      *
+     * @param messageId the e-mail id.
+     * @param accessToken the user token.
      *
-     * @param messageId
-     * @param accessToken
-     * @return
+     * @return the e-mail html in {@link String} format.
      */
     String getEmailHtml(String messageId, String accessToken);
 
@@ -44,16 +47,24 @@ public interface GmailGateway {
      *
      * @param jsonResponse the response.
      *
-     * @return the body extracted.
+     * @return the body extracted in {@link String} format.
      */
     String extractBodyFromJson(String jsonResponse);
 
     /**
+     * This method should allow to move an e-mail to trash.
      *
+     * @param messageId the e-mail id.
+     * @return a {@link String} representing the e-mail id moved to trash.
+     */
+    String moveToTrash(String messageId, String accessToken);
+
+    /**
+     * This method should allow to delete permanently the e-mail.
      *
+     * @param messageId the e-mail id.
      *
-     * @param messageId
-     * @return
+     * @return a {@link Boolean} representing if the e-mail was deleted.
      */
     boolean deleteEmail(String messageId);
 }
