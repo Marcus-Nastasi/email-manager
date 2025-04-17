@@ -24,7 +24,7 @@ public class GmailRepoGateway implements GmailGateway {
     @Autowired
     private Gson gson;
 
-    private static final String API_URL = "https://gmail.googleapis.com/gmail/v1/users/me/messages/";
+    private static final String API_URL = "https://gmail.googleapis.com/gmail/v1/users/me/messages";
 
     /**
      * This function allows to list all e-mails as a string array.
@@ -41,7 +41,8 @@ public class GmailRepoGateway implements GmailGateway {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
         // Make api call to get e-mail ids.
-        String url = "https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=" + maxResults;
+        String url = API_URL + "?maxResults=" + maxResults;
+//        String url = "https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=" + maxResults;
         // Check if next page token has been passed as an argument.
         if (pageToken != null && !pageToken.isEmpty()) {
             url += "&pageToken=" + pageToken;
@@ -77,7 +78,7 @@ public class GmailRepoGateway implements GmailGateway {
         headers.set("Authorization", "Bearer " + accessToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(
-            API_URL
+            API_URL + "/"
             + messageId,
             HttpMethod.GET,
             entity,
@@ -99,7 +100,7 @@ public class GmailRepoGateway implements GmailGateway {
         headers.set("Authorization", "Bearer " + accessToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(
-            API_URL
+            API_URL + "/"
             + messageId,
             HttpMethod.GET,
             entity,
@@ -221,7 +222,7 @@ public class GmailRepoGateway implements GmailGateway {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        String url = API_URL + messageId + "/trash";
+        String url = API_URL + "/" + messageId + "/trash";
         ResponseEntity<String> response = restTemplate.exchange(
                 url,
                 HttpMethod.POST,
@@ -244,7 +245,7 @@ public class GmailRepoGateway implements GmailGateway {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        String url = API_URL + messageId;
+        String url = API_URL + "/" + messageId;
         ResponseEntity<String> response = restTemplate.exchange(
                 url,
                 HttpMethod.DELETE,

@@ -21,6 +21,7 @@ import java.util.List;
 public class GmailResources {
 
     private final GmailUseCase gmailUseCase;
+
     private final OAuth2AuthorizedClientService authorizedClientService;
 
     public GmailResources(GmailUseCase gmailUseCase, OAuth2AuthorizedClientService oAuth2AuthorizedClientService) {
