@@ -1,4 +1,4 @@
-package com.system.email.adapters.resources.auth;
+package com.system.email.adapters.resources;
 
 import com.system.email.adapters.output.AuthenticationResponseDto;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

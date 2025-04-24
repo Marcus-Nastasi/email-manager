@@ -1,7 +1,7 @@
 package com.system.email.infra.gateway.gmail;
 
 import com.google.gson.*;
-import com.system.email.application.gateway.gmail.GmailGateway;
+import com.system.email.application.gateway.GmailGateway;
 import com.system.email.infra.model.gmail.EmailPayloadHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -42,7 +42,6 @@ public class GmailRepoGateway implements GmailGateway {
         headers.set("Authorization", "Bearer " + accessToken);
         // Make api call to get e-mail ids.
         String url = API_URL + "?maxResults=" + maxResults;
-//        String url = "https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=" + maxResults;
         // Check if next page token has been passed as an argument.
         if (pageToken != null && !pageToken.isEmpty()) {
             url += "&pageToken=" + pageToken;

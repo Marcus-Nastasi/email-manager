@@ -1,4 +1,4 @@
-package com.system.email.application.gateway.gmail;
+package com.system.email.application.gateway;
 
 import java.util.List;
 

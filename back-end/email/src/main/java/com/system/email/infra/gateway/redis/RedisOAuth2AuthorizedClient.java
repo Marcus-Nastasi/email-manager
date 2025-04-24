@@ -12,7 +12,6 @@ import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import java.time.Instant;
 
 /**
- *
  * The Redis implementation for OAuth2AuthorizedClientService.
  *
  * <p>This class allows us to use Redis as the default session saving tool by implementing
@@ -25,7 +24,9 @@ import java.time.Instant;
 public class RedisOAuth2AuthorizedClient implements OAuth2AuthorizedClientService {
 
     private final RedisTemplate<String, OAuth2AuthorizedClientDto> redisTemplate;
+
     private final ClientRegistrationRepository clientRegistrationRepository;
+
     private static final String REDIS_KEY_PREFIX = "oauth2:client:";
 
     public RedisOAuth2AuthorizedClient(RedisTemplate<String, OAuth2AuthorizedClientDto> redisTemplate, ClientRegistrationRepository clientRegistrationRepository) {
@@ -34,7 +35,6 @@ public class RedisOAuth2AuthorizedClient implements OAuth2AuthorizedClientServic
     }
 
     /**
-     *
      * <p>This function allows the application to save the login authorizations on Redis.<p/>
      *
      * @param authorizedClient The client object that has logged in.
@@ -55,7 +55,6 @@ public class RedisOAuth2AuthorizedClient implements OAuth2AuthorizedClientServic
     }
 
     /**
-     *
      * <p>This function allows the application to load back the user authorized form Redis.<p/>
      *
      * @param clientRegistrationId The client ID that is registered.
@@ -89,7 +88,6 @@ public class RedisOAuth2AuthorizedClient implements OAuth2AuthorizedClientServic
     }
 
     /**
-     *
      * <p>Auxiliar function that deletes a registre on Redis, based on the client ID and name.<p/>
      *
      * @param clientRegistrationId The client ID that is registered.

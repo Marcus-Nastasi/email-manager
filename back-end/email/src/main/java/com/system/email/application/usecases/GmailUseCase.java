@@ -1,6 +1,6 @@
-package com.system.email.application.usecases.gmail;
+package com.system.email.application.usecases;
 
-import com.system.email.application.gateway.gmail.GmailGateway;
+import com.system.email.application.gateway.GmailGateway;
 
 import java.util.List;
 

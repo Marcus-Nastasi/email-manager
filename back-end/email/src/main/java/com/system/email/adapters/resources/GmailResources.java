@@ -1,6 +1,6 @@
-package com.system.email.adapters.resources.gmail;
+package com.system.email.adapters.resources;
 
-import com.system.email.application.usecases.gmail.GmailUseCase;
+import com.system.email.application.usecases.GmailUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
