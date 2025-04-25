@@ -11,8 +11,8 @@ import {
   HlmMenuLabelComponent,
   HlmMenuSeparatorComponent
 } from '@spartan-ng/ui-menu-helm';
+import { GoogleAuthService } from './shared/services/google-auth/google-auth.service';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-// import { GoogleAuthService } from './services/auth/google-auth.service';
 import { lucideMoon, lucideSun } from '@ng-icons/lucide';
 import {
   lucideArchive,
@@ -69,13 +69,12 @@ import {
 })
 export class AppComponent implements OnInit {
 
-  // constructor(private readonly googleAuthService: GoogleAuthService) {}
+  constructor(private readonly googleAuthService: GoogleAuthService) {}
 
   // State variables.
   theme: string = 'light';
 
   /**
-   * 
    * 
    */
   ngOnInit(): void {
@@ -89,8 +88,16 @@ export class AppComponent implements OnInit {
         htmlClassList.replace('dark', 'light');
       }
     }
-    // this.googleAuthService.getUser();
-    // this.googleAuthService.getToken();
+    // call backend to get user
+    this.googleAuthService.getGoogleUser().subscribe({
+      next: user => { return; },
+      error: error => console.error(error)
+    });
+    // call backend to get token
+    this.googleAuthService.getGoogleToken().subscribe({
+      next: token => { return; },
+      error: error => console.error(error)
+    });
   }
 
   /**
