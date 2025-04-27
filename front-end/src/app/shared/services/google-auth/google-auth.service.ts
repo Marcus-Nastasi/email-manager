@@ -30,7 +30,7 @@ export class GoogleAuthService {
       responseType: 'text',
       withCredentials: true
     }).pipe(
-      tap(text => localStorage.setItem('email_manager_user', text)),
+      tap(user => user),
       catchError(this.handleError)
     );
   }
@@ -47,7 +47,7 @@ export class GoogleAuthService {
       responseType: 'text',
       withCredentials: true
     }).pipe(
-      tap(t => localStorage.setItem('access_token', t)),
+      tap(token => token),
       catchError(this.handleError)
     );
   }

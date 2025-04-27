@@ -27,7 +27,6 @@ import {
 } from '@ng-icons/lucide';
 
 /**
- * 
  * App component.
  * 
  * @author Marcus Nastasi
@@ -74,10 +73,24 @@ export class AppComponent implements OnInit {
   // State variables.
   theme: string = 'light';
 
-  /**
-   * 
-   */
   ngOnInit(): void {
+    this.checkThemeOnInit();
+    // call backend to get user
+    this.googleAuthService.getGoogleUser().subscribe({
+      next: user => localStorage.setItem('email_manager_user', user),
+      error: error => console.error(error)
+    });
+    // call backend to get token
+    this.googleAuthService.getGoogleToken().subscribe({
+      next: token => localStorage.setItem('access_token', token),
+      error: error => console.error(error)
+    });
+  }
+
+  /**
+   * Checking the theme configured and localStorage data
+   */
+  private checkThemeOnInit(): void {
     const htmlEl: HTMLElement = document.getElementsByTagName('html')[0];
     const theme: string | null = localStorage.getItem('theme');
     const htmlClassList: DOMTokenList = htmlEl.classList;
@@ -88,22 +101,12 @@ export class AppComponent implements OnInit {
         htmlClassList.replace('dark', 'light');
       }
     }
-    // call backend to get user
-    this.googleAuthService.getGoogleUser().subscribe({
-      next: user => { return; },
-      error: error => console.error(error)
-    });
-    // call backend to get token
-    this.googleAuthService.getGoogleToken().subscribe({
-      next: token => { return; },
-      error: error => console.error(error)
-    });
   }
 
   /**
    * Handling global theme on app.
    */
-  handleThemeChange($event: Event): void {
+  protected handleThemeChange($event: Event): void {
     const htmlEl: HTMLElement = document.getElementsByTagName('html')[0];
     const themeEvent: string = ($event.target as HTMLButtonElement).value;
     const htmlClassList: DOMTokenList = htmlEl.classList;
