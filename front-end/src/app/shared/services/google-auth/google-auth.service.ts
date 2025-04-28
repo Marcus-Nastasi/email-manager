@@ -53,14 +53,13 @@ export class GoogleAuthService {
   }
 
   /**
-   * Error handler
+   * Centralized error handler
    * 
    * @param error recieve the error throwed on request
    * 
    * @returns a new personalized {@link Error}
    */
   private handleError(error: HttpErrorResponse) {
-    // aqui você pode tratar erros de forma centralizada
     console.error('Erro na requisição:', error);
     return throwError(() => new Error('Erro ao carregar usuário'));
   }
