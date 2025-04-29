@@ -2,23 +2,28 @@ import { Component } from '@angular/core';
 import { EmailMenuComponent } from '../../shared/components/email-menu/email-menu.component';
 import { EmailInboxComponent } from '../../components/email/email-inbox/email-inbox.component';
 import { EmailCardResponse } from '../../types/email/EmailCardData';
+import { GmailService } from '../../shared/services/google/gmail.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-email',
-  imports: [EmailMenuComponent, EmailInboxComponent],
+  imports: [
+    EmailMenuComponent, 
+    EmailInboxComponent
+  ],
   templateUrl: './email.component.html',
   styleUrl: './email.component.scss'
 })
 export class EmailComponent {
 
-  /**
-   * @param gmailService Uses the Gmail Service to make API calls.
-   */
   constructor(private readonly gmailService: GmailService) {}
 
   protected emailId: string = '';
+
   protected selectedEmailData = { from: '', subject: '', date: '' };
+  
   protected emailCardData: EmailCardResponse[] = [];
+  
   protected nextPageToken: string | undefined = '';
 
   /**
@@ -29,24 +34,6 @@ export class EmailComponent {
   }
 
   /**
-   * This function updates the email id.
-   *
-   * @param emailId the new e-mail id.
-   */
-  private updateEmailId(emailId: string): void {
-    this.emailId = emailId;
-  }
-
-  /**
-   * This function updates the data to email card.
-   *
-   * @param data the new card data to push.
-   */
-  private updateEmailCardData(data: EmailCardResponse): void {
-    this.emailCardData.push(data);
-  }
-
-  /**
    * Set email card data object to an empty array
    */
   private cleanEmailCardData(): void {
@@ -54,21 +41,12 @@ export class EmailComponent {
   }
 
   /**
-   * This function updates the token reffering the next page.
-   *
-   * @param token the new token.
-   */
-  protected updateNextPageToken(token: string | undefined): void {
-    this.nextPageToken = token;
-  }
-
-  /**
    * This method allows to refresh the e-mails data without reloading the page.
    */
-  protected async refresh(): Promise<void> {
+  protected refresh(): void {
     this.cleanEmailCardData();
-    this.updateEmailId('');
-    await this.getEmailsCardData(true);
+    this.emailId = '';
+    this.getEmailsCardData(true);
   }
 
   /**
@@ -77,13 +55,13 @@ export class EmailComponent {
    * @param id the e-mail id to get.
    */
   private async getEmailById(id: string): Promise<void> {
-    const response: string = await this.gmailService.getEmailById(id);
-    const data: EmailCardResponse = JSON.parse(response);
+    let email: string = await firstValueFrom(this.gmailService.getEmailById(id));
+    const data: EmailCardResponse = JSON.parse(email);
     data.date = data.date.split(',')[1].trim().substring(0, 11);
     if (this.emailId === '') {
-      this.updateEmailId(data.id);
+      this.emailId = data.id;
     }
-    this.updateEmailCardData(data);
+    this.emailCardData.push(data);
     if (this.emailId === this.emailCardData[0].id) {
       this.selectedEmailData = {
         from: this.emailCardData[0].from,
@@ -101,7 +79,7 @@ export class EmailComponent {
    */
   public updateSelectedEmail(newValue: string): void {
     if (newValue && this.emailId !== newValue) {
-      this.updateEmailId(newValue);
+      this.emailId = newValue;
       this.emailCardData.forEach((cd: EmailCardResponse): void => {
         if (cd.id === this.emailId) {
           this.selectedEmailData = {
@@ -120,16 +98,16 @@ export class EmailComponent {
    */
   public async getEmailsCardData(refreshFlag: boolean): Promise<void> {
     if (refreshFlag) {
-      this.updateNextPageToken('');
+      this.nextPageToken = '';
     }
-    const idsList: string[] = await this.gmailService.getEmailsList(10, this.nextPageToken);
-    if (idsList.length < 11 || idsList[idsList.length - 1] === null) {
+    let idsList: string[] = await firstValueFrom(this.gmailService.getEmailsList(10, this.nextPageToken));
+    if (idsList.length < 11) {
       return
     }
     const nextPageTkn: string | undefined = idsList.pop();
-    this.updateNextPageToken(nextPageTkn);
+    this.nextPageToken = nextPageTkn;
     idsList.forEach(async (id: string): Promise<void> => {
-      this.getEmailById(id);
+      await this.getEmailById(id);
     });
   }
 }
