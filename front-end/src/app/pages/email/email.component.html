@@ -5,12 +5,11 @@
     style="height: 92.5vh;"
   >
     <email-menu class="h-1vh w-1/5" />
-    <!-- [emailId]="emailId"
+    <email-inbox
+      [emailId]="emailId"
       [emailsCardData]="emailCardData"
       (emailIdChanged)="updateSelectedEmail($event)"
-      (loadMoreEmails)="getEmailsCardData(false)" -->
-    <email-inbox
-      
+      (loadMoreEmails)="getEmailsCardData(false)"
       class="h-1vh w-2/5"
     />
     <!-- <mail-view
