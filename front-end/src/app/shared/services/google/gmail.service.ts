@@ -1,6 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
+import { EmailCardResponse } from '../../../types/email/EmailCardData';
 
 /**
  * The gmail service.
@@ -50,15 +51,15 @@ export class GmailService {
    * 
    * @returns the data from e-mail string.
    */
-  public getEmailById(id: string): Observable<string> {
-    return this.http.get<string>(`${this.url}/gmail/find/email/${id}`, {
+  public getEmailById(id: string): Observable<EmailCardResponse> {
+    return this.http.get<EmailCardResponse>(`${this.url}/gmail/find/email/${id}`, {
       responseType: 'json',
       withCredentials: true,
       headers: {
         "Content-Type": "application/json"
       }
     }).pipe(
-      tap((response: string) => response),
+      tap((response: EmailCardResponse) => response),
       catchError(this.handleError)
     );
   }

@@ -55,8 +55,8 @@ export class EmailComponent {
    * @param id the e-mail id to get.
    */
   private async getEmailById(id: string): Promise<void> {
-    let email: string = await firstValueFrom(this.gmailService.getEmailById(id));
-    const data: EmailCardResponse = JSON.parse(email);
+    let email: EmailCardResponse = await firstValueFrom(this.gmailService.getEmailById(id));
+    const data: EmailCardResponse = email;
     data.date = data.date.split(',')[1].trim().substring(0, 11);
     if (this.emailId === '') {
       this.emailId = data.id;
@@ -106,8 +106,10 @@ export class EmailComponent {
     }
     const nextPageTkn: string | undefined = idsList.pop();
     this.nextPageToken = nextPageTkn;
-    idsList.forEach(async (id: string): Promise<void> => {
-      await this.getEmailById(id);
+    const getEmailCalls: Promise<void>[] = [];
+    idsList.forEach((id: string): void => {
+      getEmailCalls.push(this.getEmailById(id));
     });
+    Promise.all(getEmailCalls);
   }
 }
